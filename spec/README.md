@@ -8,13 +8,28 @@ predefined symbols: INT, BOOL, STRING, ID, CONSTRUCTOR
 
 PROGRAM ::=
   | IMPORT
-    STATEMENTS
+    DECLS
   
 IMPORT ::=
   |
   | use ID
     IMPORT
-    
+
+DECLS ::=
+  |
+  | DECL DECLS
+
+DECL ::=
+  | type ID = CONSTRUCTOR of TYPE
+  | var ID = EXPR
+  | var ID : TYPE = EXPR
+  | def ID ARGS =
+      STATEMENTS
+    end
+  | def ID ARGS : TYPE =
+      STATEMENTS
+    end
+
 STATEMENTS ::=
   |
   | STATEMENT STATEMENTS
@@ -22,22 +37,15 @@ STATEMENTS ::=
 STATEMENT ::=
   | DECL
   | ID := EXPR
-  | ID[] := EXPR
+  | LIST[] := EXPR
   | if EXPR then STATEMENT_1 else STATEMENT_2
   | while EXPR do
       STATEMENTS
     done
-
-DECL ::=
-  | type ID = CONSTRUCTOR of TYPE
-  | var ID = EXPR
-  | var ID : TYPE = EXPR
-  | def ID ARGS =
-      BLOCK
-    end
-  | def ID ARGS : TYPE =
-      BLOCK
-    end
+    
+LIST ::=
+  | ID
+  | LIST[]
   
 EXPR ::=
   | ()
@@ -45,7 +53,7 @@ EXPR ::=
   | BOOL
   | STRING
   | ID
-  | ID[EXPR]
+  | ARR[EXPR]
   | (EXPR_1, EXPR_2)
   | left EXPR | right EXPR
   | lambda ID -> EXPR
@@ -70,11 +78,6 @@ EXPRARG ::=
 PATTERN ::=
   | () | INT | BOOL | STRING | ID | CONSTRUCTOR PATTERN | (PATTERN_1, PATTERN_2)
   
-BLOCK ::=
-  |
-  | EXPR
-    BLOCK
-  
 BINOP ::=
   | + | - | * | ** | < | > | = | <= | >= | \= | << | >> | ^ | and | or | xor | mod
 
@@ -95,6 +98,6 @@ TYPE ::=
   | int
   | bool
   | string
+  | TYPE_1 * TYPE_2
   | TYPE list
-  | (TYPE_1, TYPE_2) pair
 ```
