@@ -21,8 +21,8 @@ STATEMENTS ::=
   
 STATEMENT ::=
   | DECL
-  | ID = EXPR
-  | ID[] = EXPR
+  | ID := EXPR
+  | ID[] := EXPR
   | if EXPR then STATEMENT_1 else STATEMENT_2
   | while EXPR do
       STATEMENTS
@@ -45,13 +45,14 @@ EXPR ::=
   | BOOL
   | STRING
   | ID
+  | ID[EXPR]
+  | (EXPR_1, EXPR_2)
+  | left EXPR | right EXPR
   | lambda ID -> EXPR
   | ID (EXPRARGS)
   | EXPR_1 BINOP EXPR_2
   | UNOP EXPR
   | if EXPR_1 then EXPR_2 else EXPR_3
-  | (EXPR_1, EXPR_2)
-  | left EXPR | right EXPR
   | CONSTRUCTOR EXPR
   | match EXPR with
       case PATTERN_1 -> EXPR_1 end
