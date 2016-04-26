@@ -5,7 +5,7 @@ The syntax of `Chi` is defined below, presented in Backus-Naur normal form (BNF)
 
 ```
 # These are symbols that are "primitive" and already well-defined.
-predefined symbols: FILE, INT, BOOL, STRING, ID, CONSTRUCTOR
+predefined symbols: FILE, INT, LONG, BOOL, CHAR, STRING, ID, CONSTRUCTOR
 
 # A program is any number of import statements followed by a series of declarations.
 PROGRAM ::=
@@ -115,7 +115,9 @@ STATEMENT ::=
 EXPR ::=
   | ()
   | INT
+  | LONG
   | BOOL
+  | CHAR
   | STRING
   | ID
   | LIST [ EXPR ]
@@ -129,9 +131,15 @@ EXPR ::=
   | if EXPR_1 then EXPR_2 else EXPR_3
   | CONSTRUCTOR ( EXPR )
   | match EXPR with
-      case PATTERN_1: EXPR_1 end
-        ...
-      case PATTERN_N: EXPR_N end
+      CASES
+    end
+
+# Cases for a pattern match; at least one case must be specified for a given match. If a
+#   match is to be used imperatively, then we use the fact that it is an expression.
+CASES ::=
+  | case PATTERN -> EXPR
+  | case PATTERN -> EXPR
+    CASES
 
 # A partial list is a sublist of a list (the whole list itself or subportions of it).
 PARLIST ::=
@@ -153,13 +161,15 @@ EXPRARG ::=
   | EXPR
   | EXPR : TYPE
 
-# A pattern (to match over) is either a wildcard, a primitive type, a user-defined constructor, or a pair.
+# A pattern (to match over) is either a wildcard _, a primitive, a user-defined constructor, or a pair.
+#   Note that we do not permit pattern matching over strings or list types. Its use is only apparent
+#   for user-defined data types and pairs.
 PATTERN ::=
-  | _ | () | INT | BOOL | STRING | ID | CONSTRUCTOR ( PATTERN ) | ( PATTERN_1, PATTERN_2 )
+  | _ | () | INT | LONG | BOOL | CHAR | ID | CONSTRUCTOR ( PATTERN ) | ( PATTERN_1, PATTERN_2 )
 
 # A binary operation is one of the following:
 #   • Addition, subtraction, multiplication, division, or modular arithmetic
-#   • High-multiplication (**)
+#   • High-multiplication for 64/128-bit support (**)
 #   • A comparision (LT, GT, EQ, LE, GE, NE)
 #   • String concatenation (^)
 #   • Logical or bitwise operations (and, or, xor), depending on the types used as arguments
@@ -193,7 +203,9 @@ ARG ::=
 TYPE ::=
   | unit
   | int
+  | long
   | bool
+  | char
   | string
   | TYPE_1 * TYPE_2
   | TYPE list
