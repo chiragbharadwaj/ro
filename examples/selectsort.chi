@@ -15,7 +15,8 @@ def sort (arr : int list) : void =
       var temp = arr[j]
       arr[j] := arr[i_min]
       arr[i_min] := temp
-      
+    end
+    
     j := j + 1
   done
 end
