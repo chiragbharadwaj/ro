@@ -40,7 +40,7 @@ DECL ::=
   | def ID ARGS =
       STATEMENTS
     end
-  | def ID ARGS : TYPE =
+  | def ID ARGS : EXTYPE =
       STATEMENTS
     end
 
@@ -91,9 +91,9 @@ STATEMENT ::=
   | DECL
   | ID := EXPR
   | LIST [ EXPR_1 ] := EXPR_2
-  | if EXPR then STATEMENT
-  | if EXPR then STATEMENT_1 else STATEMENT_2
-  | while EXPR do
+  | if ( EXPR ) then STATEMENTS end
+  | if ( EXPR ) then STATEMENTS_1 else STATEMENTS_2 end
+  | while ( EXPR ) do
       STATEMENTS
     done
   | return EXPR
@@ -153,9 +153,9 @@ EXPRARG ::=
   | EXPR
   | EXPR : TYPE
 
-# A pattern (to match over) is either a primitive type or a user-defined constructor or a pair.
+# A pattern (to match over) is either a wildcard, a primitive type, a user-defined constructor, or a pair.
 PATTERN ::=
-  | () | INT | BOOL | STRING | ID | CONSTRUCTOR ( PATTERN ) | ( PATTERN_1, PATTERN_2 )
+  | _ | () | INT | BOOL | STRING | ID | CONSTRUCTOR ( PATTERN ) | ( PATTERN_1, PATTERN_2 )
 
 # A binary operation is one of the following:
 #   • Addition, subtraction, multiplication, division, or modular arithmetic
@@ -197,4 +197,9 @@ TYPE ::=
   | string
   | TYPE_1 * TYPE_2
   | TYPE list
+  
+# An extended type is either a regular type or a special void type (for functions: return nothing).
+EXTYPE ::=
+  | void
+  | TYPE
 ```
