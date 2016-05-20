@@ -1,5 +1,5 @@
 # Boo
-This is compiler for `Boo`, an imperative programming language with functional features created by Chirag Bharadwaj and Peter Li at Cornell University. The compiler, which will eventually be written in `OCaml` (a functional language with near-`C` performance), will compile to the `x86-64` assembly language.
+This is compiler for `Ro`, an imperative programming language with functional features created by Chirag Bharadwaj and Peter Li at Cornell University. The compiler, which will eventually be written in `OCaml` (a functional language with near-`C` performance), will compile to the `x86-64` assembly language.          
 
 To-Do List
 ----
@@ -19,6 +19,7 @@ We will update this list with upcoming features in future builds as we get them 
 * Adding support for comments.
   + That is, in-line comments as well as out-of-line block-style comments.
 * Adding richer type-declarations.
+* Adding support for interface files, namely those with the `.iro` extension.
 
 Privacy Policy
 ----
