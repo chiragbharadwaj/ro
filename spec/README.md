@@ -86,7 +86,7 @@ STATEMENTS ::=
 #   • An assignment of an expression to a list at some position
 #   • An if-then statement or an if-then-else statement
 #   • A while statement, whose body contains statements
-#   • A return statement, for values returned by a function
+#   • A return statement, for values returned by a function (`give`)
 STATEMENT ::=
   | DECL
   | ID := EXPR
@@ -96,7 +96,7 @@ STATEMENT ::=
   | while ( EXPR ) do
       STATEMENTS
     done
-  | return EXPR
+  | give EXPR
   
 # An expression is one of the following:
 #   • The unit value or a primitive integer, boolean, or string
@@ -200,6 +200,7 @@ ARG ::=
 #   • A primitive type, like int, bool, or string
 #   • A pair of types
 #   • A list, whose elements are homogeneously of one type
+#   • A user-defined type, specified by an identifier
 TYPE ::=
   | unit
   | int
@@ -209,6 +210,7 @@ TYPE ::=
   | string
   | TYPE_1 * TYPE_2
   | TYPE list
+  | ID
   
 # An extended type is either a regular type or a special void type (for functions: return nothing).
 EXTYPE ::=
