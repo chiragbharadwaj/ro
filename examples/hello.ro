@@ -1,0 +1,7 @@
+use io
+
+# Main execution block. Prints "Hello world" to the screen.
+def main (args : string list) : int =
+  printf "Hello world"
+  give 0
+end

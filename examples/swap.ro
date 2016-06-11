@@ -1,0 +1,5 @@
+# Swaps a pair so that its arguments are returned in the opposite order.
+#   - [p] The pair whose components are to be swapped.
+def swap (p : 'a * 'b) : 'b * 'a =
+  give (right p, left p)
+end

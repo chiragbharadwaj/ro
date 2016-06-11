@@ -1,0 +1,45 @@
+# Computes the hailstone sequence (i.e. the number of steps) for a particular
+#   integer by doing recursive calls.
+#   - [n] The integer for which the hailstone must be computed.
+def rec_hailstone (n : int) : int =
+  if n = 0 then
+    give 0
+  else
+    give 1 + rec_hailstone (if n mod 2 = 0 then n/2 else 3*n + 1)
+  end
+end
+
+# Computes the hailstone sequence (i.e. the number of steps) for a particular
+#   integer by using an iterative loop.
+#   - [n] The integer for which the hailstone must be computed.
+def iter_hailstone (n : int) : int =
+  mutable var i = 0
+  while n \= 1 do
+    i := i + 1
+    n := if n mod 2 = 0 then n/2 else 3*n + 1
+  done
+  give i
+end
+
+# Computes the hailstone sequence (i.e. the number of steps) for a particular
+#   integer by using the dynamic programming technique. Assumes that the array
+#   passed in is mutable. This is an optimized version of rec_hailstone.
+#   - [n]   The integer for which the hailstone must be computed.
+#   - [arr] A list of mappings (by index) from integers to number of steps.
+#   - [s]   A lower bound on all of the mappings that have been computed so far.
+def memo_hailstone (n : int, arr : int list, s : int) : int =
+  if n < s and arr[n] \= 0 then
+    give arr[n]
+  end
+
+  if n = 0 then
+    give 0
+  else
+    mutable var i = 0
+    i := 1 + memo_hailstone (if n mod 2 = 0 then n/2 else 3*n + 1, arr, s)
+    if n < s then
+      arr[n] := s
+    end
+    give i
+  end
+end
