@@ -52,10 +52,11 @@ DECL ::=
       STATEMENTS
     end
     
-# A collection of fields is either a single field or more than one field.
+# A collection of fields is either a single field or more than one field. Always with type annotations.
 FIELDS ::=
   | ID : TYPE
-  | ID : TYPE ; FIELDS
+  | ID : TYPE ;
+    FIELDS
 
 # A standard declaration consists of one of the following:
 #   • A variable declaration, with or without a type annotation
@@ -80,7 +81,8 @@ STATEMENTS ::=
 
 # A standalone statement is one of the following:
 #   • A declaration of any type, including functions (e.g. local functions within functions)
-#   • An assignment of an expression to a variable (which could be a list's name)
+#   • An assignment of an expression to a variable (which could be a list's name or a record's name)
+#   • An assignment of an expression to a record field
 #   • An assignment of an expression to a list at some position
 #   • A call to a subroutine/function defined earlier (i.e. do action with side effects)
 #   • An if-then statement or an if-then-else statement
@@ -89,6 +91,7 @@ STATEMENTS ::=
 STATEMENT ::=
   | DECL
   | ID := EXPR
+  | ID . ID := EXPR
   | ID [ EXPR_1 ] := EXPR_2
   | call ID LPAREN EXPRARGS RPAREN
   | if LPAREN EXPR RPAREN then STATEMENTS end
@@ -100,7 +103,8 @@ STATEMENT ::=
   
 # An expression is one of the following:
 #   • The unit value or a primitive integer/float, boolean, or char/string
-#   • An identifier, i.e. a variable's name (which could be a list's name)
+#   • An identifier, i.e. a variable's name (which could be a list's name or a record's name)
+#   • A record's field name
 #   • An empty list ([])
 #   • A (non-empty) list with some contents
 #   • A list access at some position (must be an integer within bounds)
@@ -124,6 +128,7 @@ EXPR ::=
   | CHAR
   | STRING
   | ID
+  | ID . ID
   | [ ]
   | [ CONTENTS ]
   | LIST [ EXPR ]
@@ -208,7 +213,7 @@ ARG ::=
 #   • A primitive type, like int, bool, or string
 #   • A pair of types
 #   • A list, whose elements are homogeneously of one type
-#   • A user-defined type, specified by an identifier
+#   • A user-defined type/record, specified by an identifier
 TYPE ::=
   | unit
   | int
