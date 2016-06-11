@@ -35,11 +35,13 @@ RPAREN ::=
 
 # A standalone declaration consists of one of the following:
 #   • A type declaration, which could consist of one or more constructors
+#   • A record declaration, which could have many fields (but types must be specified)
 #   • A standard declaration, which could be normal or mutable (can use := only if mutable)
 #   • A function declaration with or without a type annotation, consisting of one or more arguments
 #       and a body of statements
 DECL ::=
   | type ID = CONSTRUCTORS
+  | record ID = struct FIELDS end
   | STDECL
   | const STDECL
   | mutable STDECL
@@ -49,6 +51,11 @@ DECL ::=
   | def ID ARGS : EXTYPE =
       STATEMENTS
     end
+    
+# A collection of fields is either a single field or more than one field.
+FIELDS ::=
+  | ID : TYPE
+  | ID : TYPE ; FIELDS
 
 # A standard declaration consists of one of the following:
 #   • A variable declaration, with or without a type annotation
@@ -92,7 +99,7 @@ STATEMENT ::=
   | give EXPR
   
 # An expression is one of the following:
-#   • The unit value or a primitive integer, boolean, or string
+#   • The unit value or a primitive integer/float, boolean, or char/string
 #   • An identifier, i.e. a variable's name (which could be a list's name)
 #   • An empty list ([])
 #   • A (non-empty) list with some contents
@@ -157,7 +164,7 @@ NON-EMPTY-EXPRARGS ::=
   | EXPRARG
   | EXPRARG , NON-EMPTY-EXPRARGS
 
-# A standalone argument is an expression, with or without type annotations.
+# A standalone argument is an expression, with or without special type annotations.
 EXPRARG ::=
   | EXPR
   | EXPR : TYPE
@@ -191,7 +198,7 @@ NON-EMPTY-ARGS ::=
   | ARG
   | ARG , NON-EMPTY-ARGS
 
-# A standalone argument is an identifier, with or without a type annotation.
+# A standalone argument is an identifier, with or without a special type annotation.
 ARG ::=
   | ID
   | ID : TYPE
@@ -212,7 +219,7 @@ TYPE ::=
   | TYPE_1 * TYPE_2
   | TYPE list
   | ID
-  
+
 # An extended type is either a regular type or a special void type (for functions: return nothing).
 EXTYPE ::=
   | void
