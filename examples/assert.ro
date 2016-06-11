@@ -1,0 +1,9 @@
+error NotEqual
+
+# Checks to see if the two specified objects are equal. If they are, nothing
+# happens. If they are not, then a NotEqual exception is raised.
+#   - [obj1] An object of type 'a.
+#   - [obj2] Another object of the same type 'a.
+def assert_eq (obj1 : 'a, obj2 : 'a) : void =
+  if obj1 \= obj2 then raise NotEqual "These two objects are not equal." end
+end

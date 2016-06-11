@@ -1,7 +1,11 @@
 Syntax
 ----
 
-The syntax of `Ro` is defined below, presented in Backus-Naur normal form (BNF). Notice some similarities to existing languages such as `Python`, `Java`, and `OCaml`. `Ro` draws inspiration from each of these programming languages. Note that terminal productions below are shown in lowercase, while non-terminal symbols are shown in uppercase.
+The syntax of `Ro` is defined below, presented in Backus-Naur normal form (BNF).
+Notice some similarities to existing languages such as `Python`, `Java`, and `OCaml`.
+`Ro` draws inspiration from each of these programming languages. Note that terminal
+productions below are shown in lowercase, while non-terminal symbols are shown in
+uppercase.
 
 ```
 # These are symbols that are "primitive" and already well-defined.
@@ -12,7 +16,8 @@ PROGRAM ::=
   | IMPORT
     DECLS
     
-# An import statement is either empty or consists of one or more "use <module>" statements.
+# An import statement is either empty or consists of one or more "use <module>"
+#   statements.
 IMPORT ::=
   |
   | use FILE
@@ -36,12 +41,15 @@ RPAREN ::=
 # A standalone declaration consists of one of the following:
 #   • A type declaration, which could consist of one or more constructors
 #   • A record type declaration, which could have many fields (always mutable)
-#   • A standard declaration, which could be normal or mutable (can use := only if mutable)
-#   • A function declaration with or without a type annotation, consisting of one or more arguments
-#       and a body of statements
+#   • An error-type declaration, denoted by an identifier for the name
+#   • A standard declaration, which could be normal or mutable (can use := only
+#       if mutable)
+#   • A function declaration with or without a type annotation, consisting of
+#       one or more arguments and a body of statements
 DECL ::=
   | type ID = CONSTRUCTORS
   | record ID = struct FIELDS end
+  | error ID
   | STDECL
   | const STDECL
   | mutable STDECL
@@ -52,7 +60,8 @@ DECL ::=
       STATEMENTS
     end
     
-# A collection of fields is either a single field or more than one field. Always with type annotations.
+# A collection of fields is either a single field or more than one field. Always
+#   with type annotations.
 FIELDS ::=
   | ID : TYPE
   | ID : TYPE ;
@@ -88,13 +97,17 @@ STATEMENTS ::=
   | STATEMENT STATEMENTS
 
 # A standalone statement is one of the following:
-#   • A declaration of any type, including functions (e.g. local functions within functions)
-#   • An assignment of an expression to a variable (which could be a list's name or a record's name)
+#   • A declaration of any type, including functions (e.g. local functions
+#       within functions)
+#   • An assignment of an expression to a variable (which could be a list's name
+#       or a record's name)
 #   • An assignment of an expression to a record field
 #   • An assignment of an expression to a list at some position
-#   • A call to a subroutine/function defined earlier (i.e. do action with side effects)
+#   • A call to a subroutine/function defined earlier (i.e. do action with side
+#       effects)
 #   • An if-then statement or an if-then-else statement
 #   • A while statement, whose body contains statements
+#   • Raise an exception, with or without a body message
 #   • A return statement, for values returned by a function (i.e. give back)
 STATEMENT ::=
   | DECL
@@ -107,11 +120,14 @@ STATEMENT ::=
   | while LPAREN EXPR RPAREN do
       STATEMENTS
     done
+  | raise ID
+  | raise ID STRING
   | give EXPR
   
 # An expression is one of the following:
 #   • The unit value or a primitive integer/float, boolean, or char/string
-#   • An identifier, i.e. a variable's name (which could be a list's name or a record's name)
+#   • An identifier, i.e. a variable's name (which could be a list's name or a
+#       record's name)
 #   • A record's field name
 #   • An empty list ([])
 #   • A (non-empty) list with some contents
@@ -120,9 +136,12 @@ STATEMENT ::=
 #   • List concatenation (glue two lists together, maintain relative order)
 #   • The length of a list (could be a sublist)
 #   • A pair of expressions (i.e. a pairing operator)
-#   • The projection functions that find the left-half and the right-half of a pair, respectively
-#   • An anonymous function from an identifier to expressions (i.e. no curried functions)
-#   • Function application, but can only apply arguments to a named function (i.e. take value of)
+#   • The projection functions that find the left-half and the right-half of a
+#       pair, respectively
+#   • An anonymous function from an identifier to expressions (i.e. no curried
+#       functions)
+#   • Function application, but can only apply arguments to a named function
+#       (i.e. take value of)
 #   • A binary relation on expressions (binary operations)
 #   • A unary relation on expressions (unary operations)
 #   • An if-then-else expression (effectively a ternary operator)
@@ -160,8 +179,8 @@ CONTENTS ::=
   | EXPR
   | EXPR ; CONTENTS
 
-# Cases for a pattern match; at least one case must be specified for a given match. If a
-#   match is to be used imperatively, then we use the fact that it is an expression.
+# Cases for a pattern match; at least one case must be specified for a given match.
+#   If a match is to be used imperatively, then we use it as an expression.
 CASES ::=
   | case PATTERN -> EXPR
   | case PATTERN -> EXPR
@@ -182,22 +201,26 @@ EXPRARG ::=
   | EXPR
   | EXPR : TYPE
 
-# A pattern (to match over) is either a wildcard _, an empty list, a list pattern, a primitive, a user-
-#   defined constructor, or a pair. Note that we do not permit pattern matching over strings. Its use is
-#   only apparent for user-defined data types and pairs.
+# A pattern (to match over) is either a wildcard _, an empty list, a list pattern,
+#   a primitive, a user-defined constructor, or a pair. Note that we do not permit
+#   pattern matching over strings. Its use is only apparent for user-defined data
+#   types and pairs.
 PATTERN ::=
-  | _ | [ ] | P_1 :: P_2 | () | INT | LONG | BOOL | CHAR | ID | CONSTRUCTOR LPAREN PATTERN RPAREN | ( P_1, P_2 )
+  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | INT | LONG | BOOL | CHAR | ID
+  | CONSTRUCTOR LPAREN PATTERN RPAREN | ( PATTERN_1, PATTERN_2 )
 
 # A binary operation is one of the following:
 #   • Addition, subtraction, multiplication, division, or modular arithmetic
 #   • High-multiplication for 64/128-bit support (**)
 #   • A comparision (LT, GT, EQ, LE, GE, NE)
 #   • String concatenation (^)
-#   • Logical or bitwise operations (and, or, xor), depending on the types used as arguments
+#   • Logical or bitwise operations (and, or, xor), depending on the types used
+#       as arguments
 BINOP ::=
   | + | - | * | / | ** | < | > | = | <= | >= | \= | ^ | and | or | xor | mod
 
-# A unary operation is either logical/bitwise negation (depending on type used) or arithmetic negation.
+# A unary operation is either logical/bitwise negation (depending on type used)
+#   or arithmetic negation.
 UNOP ::=
   | - | not
 
@@ -233,7 +256,7 @@ TYPE ::=
   | TYPE list
   | ID
 
-# An extended type is either a regular type or a special void type (for functions: return nothing).
+# An extended type is either a regular type or a special void type (return nothing).
 EXTYPE ::=
   | void
   | TYPE

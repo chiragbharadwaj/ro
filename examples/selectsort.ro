@@ -1,17 +1,20 @@
 use assert
 
-def sort (arr : int list) : void =
-  var i = 0
-  var j = 0
+# This function attempts to sort the specified list in an imperative manner,
+# using mutability to handle the list.
+#   - [arr] is a list of ints, to be sorted via selection-sort.
+def imperative_sort (arr : int list) : void =
+  mutable var i = 0
+  mutable var j = 0
   
-  while (j < length(arr) - 1) do
-    var i_min = j
-    while (i < length(arr)) do
-      if (arr[i] < arr[i_min]) then i_min := i
+  while j <= length arr do
+    mutable var i_min = j
+    while i < length arr do
+      if arr[i] < arr[i_min] then i_min := i end
       i := i + 1
     done
   
-    if (i_min != j) then
+    if i_min \= j then
       var temp = arr[j]
       arr[j] := arr[i_min]
       arr[i_min] := temp
@@ -21,9 +24,31 @@ def sort (arr : int list) : void =
   done
 end
 
+# This function attempts to sort the specified list in a functional manner,
+# assuming that the list is declared immutable and handling it as such.
+#   - [arr] is a list of ints, to be sorted via selection-sort.
+def functional_sort (arr : int list) : int list =
+  def select_r head acc tail =
+    give match tail with
+      case []      -> head :: functional_sort acc
+      case x :: xs ->
+        if x < head then
+          select_r x (head :: acc) xs
+        else
+          select_r head (x :: acc) xs
+  end
+  give match arr with
+    case []     -> []
+    case h :: t -> select_r h [] t
+end
+
+# Main execution block. Checks to make sure that both sorting algorithms work
+# equally as effectively in that they return the same answer on a simple list.
 def main (args : string list) : int =
-  list arr = [ 3 ; 4 ; -1 ; 15 ; -2 ; 17 ]
-  sort (arr)
-  assert_eq (arr, [ -2 ; -1 ; 3 ; 4 ; 15 ; 17 ])
-  return 0
+  mutable list arr = [ 3 ; 4 ; -1 ; 15 ; -2 ; 17 ]
+  call imperative_sort arr
+  call assert_eq (arr, [ -2 ; -1 ; 3 ; 4 ; 15 ; 17 ])
+  list arr2 = [ 3 ; 4 ; -1 ; 15 ; -2 ; 17 ]
+  call assert_eq (take functional_sort arr2, [ -2 ; -1 ; 3 ; 4 ; 15 ; 17 ])
+  give 0
 end
