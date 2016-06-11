@@ -35,7 +35,7 @@ RPAREN ::=
 
 # A standalone declaration consists of one of the following:
 #   • A type declaration, which could consist of one or more constructors
-#   • A record declaration, which could have many fields (but types must be specified)
+#   • A record type declaration, which could have many fields (always mutable)
 #   • A standard declaration, which could be normal or mutable (can use := only if mutable)
 #   • A function declaration with or without a type annotation, consisting of one or more arguments
 #       and a body of statements
@@ -60,14 +60,22 @@ FIELDS ::=
 
 # A standard declaration consists of one of the following:
 #   • A variable declaration, with or without a type annotation
+#   • A record instantiation (all fields are mutable)
 #   • A list declaration, with or without a type annotation
 STDECL ::=
   | var ID = EXPR
   | var ID : TYPE = EXPR
+  | ID = new ID { FIELDS-DECL }
+  | ID : TYPE = new ID { FIELDS-DECL }
   | list ID [ ]
   | ID [ ] : TYPE
   | list ID = EXPR
   | ID : TYPE = EXPR
+  
+# A declaration of fields for record instantiation.
+FIELDS-DECL ::=
+  | ID = EXPR
+  | ID = EXPR ; FIELDS-DECL
 
 # A constructor is either a single constructor or more than one of them.
 CONSTRUCTORS ::=
