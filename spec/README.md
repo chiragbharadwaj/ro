@@ -245,6 +245,7 @@ ARG ::=
 #   • A pair of types
 #   • A list, whose elements are homogeneously of one type
 #   • A user-defined type/record, specified by an identifier
+#   • A function type (for lambda expressions captured by a variable)
 TYPE ::=
   | unit
   | int
@@ -255,6 +256,7 @@ TYPE ::=
   | TYPE_1 * TYPE_2
   | TYPE list
   | ID
+  | TYPE -> TYPE
 
 # An extended type is either a regular type or a special void type (return nothing).
 EXTYPE ::=
