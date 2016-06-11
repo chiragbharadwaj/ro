@@ -1,0 +1,10 @@
+use io
+
+# Capture a lambda expression in a variable to see what happens.
+var x = lambda y -> y + 1
+
+# Main execution block. Prints "4" to the screen.
+def main (args : string list) : int =
+  printf "%d" (x 3) # Should print out 4.
+  give 0
+end
