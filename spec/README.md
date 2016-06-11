@@ -25,24 +25,31 @@ DECLS ::=
 
 # A standalone declaration consists of one of the following:
 #   • A type declaration, which could consist of one or more constructors
-#   • A variable declaration, with or without a type annotation
-#   • A list declaration, with or without a type annotation, always fixed-size (empty or full)
+#   • A standard declaration, which could be normal, a constant, or even mutable (default: immutable)
 #   • A function declaration with or without a type annotation, consisting of one or more arguments and
 #       a body of statements
 DECL ::=
   | type ID = CONSTRUCTORS
-  | var ID = EXPR
-  | var ID : TYPE = EXPR
-  | list DECLIST [ INT ]
-  | DECLIST [ INT ] : TYPE
-  | list ID = [ CONTENTS ]
-  | ID : TYPE = [ CONTENTS ]
+  | STDECL
+  | const STDECL
+  | mutable STDECL
   | def ID ARGS =
       STATEMENTS
     end
   | def ID ARGS : EXTYPE =
       STATEMENTS
     end
+
+# A standard declaration consists of one of the following:
+#   • A variable declaration, with or without a type annotation
+#   • A list declaration, with or without a type annotation, always fixed-size (mutable or not)
+STDECL ::=
+  | var ID = EXPR
+  | var ID : TYPE = EXPR
+  | list DECLIST [ INT ]
+  | DECLIST [ INT ] : TYPE
+  | list ID = [ CONTENTS ]
+  | ID : TYPE = [ CONTENTS ]
 
 # This is a list-type specifically for declarations (i.e. passing in integers as arguments); standard
 #   or multidimensional in size.
