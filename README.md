@@ -1,5 +1,5 @@
 # Ro
-This is compiler for `Ro`, an imperative programming language with functional features created by Chirag Bharadwaj and Peter Li at Cornell University. The compiler, which will eventually be written in `OCaml` (a functional language with near-`C` performance), will compile to the `x86-64` assembly language.          
+This is a compiler for `Ro`, an imperative programming language with functional features created by Chirag Bharadwaj and Peter Li at Cornell University. The compiler, which will eventually be written in `OCaml` (a functional language with near-`C` performance), will compile to the `x86-64` assembly language.          
 
 To-Do List
 ----
