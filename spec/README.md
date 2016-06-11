@@ -25,7 +25,7 @@ DECLS ::=
 
 # A standalone declaration consists of one of the following:
 #   • A type declaration, which could consist of one or more constructors
-#   • A standard declaration, which could be normal, a constant, or even mutable (default: immutable)
+#   • A standard declaration, which could be normal, a constant, or even mutable (can use := only if mutable)
 #   • A function declaration with or without a type annotation, consisting of one or more arguments and
 #       a body of statements
 DECL ::=
@@ -42,45 +42,19 @@ DECL ::=
 
 # A standard declaration consists of one of the following:
 #   • A variable declaration, with or without a type annotation
-#   • A list declaration, with or without a type annotation, always fixed-size (mutable or not)
+#   • A list declaration, with or without a type annotation
 STDECL ::=
   | var ID = EXPR
   | var ID : TYPE = EXPR
-  | list DECLIST [ INT ]
-  | DECLIST [ INT ] : TYPE
-  | list ID = [ CONTENTS ]
-  | ID : TYPE = [ CONTENTS ]
-
-# This is a list-type specifically for declarations (i.e. passing in integers as arguments); standard
-#   or multidimensional in size.
-DECLIST ::=
-  | ID
-  | DECLIST [ INT ]
+  | list ID [ ]
+  | ID [ ] : TYPE
+  | list ID = EXPR
+  | ID : TYPE = EXPR
 
 # A constructor is either a single constructor or more than one of them.
 CONSTRUCTORS ::=
   | CONSTRUCTOR of TYPE
   | CONSTRUCTOR of TYPE or CONSTRUCTORS
-
-# A list is either a standalone identifier or a multidimensional version of a list.
-LIST ::=
-  | ID
-  | LIST [ EXPR ]
-
-# The contents of a list are either empty or non-empty.
-CONTENTS ::=
-  |
-  | NON-EMPTY-CONTENTS
-
-# Non-empty-contents either consist of one or more super-expressions.
-NON-EMPTY-CONTENTS ::=
-  | ARR
-  | ARR ; NON-EMPTY-CONTENTS
-
-# A so-called "super-expression" is either an expression or another nested list.
-ARR ::=
-  | EXPR
-  | [ CONTENTS ]
 
 # Statements are either empty or consist of one or more statements.
 STATEMENTS ::=
@@ -98,8 +72,8 @@ STATEMENTS ::=
 STATEMENT ::=
   | DECL
   | ID := EXPR
-  | LIST [ EXPR_1 ] := EXPR_2
-  | do ID ( EXPRARGS )
+  | ID [ EXPR_1 ] := EXPR_2
+  | call ID ( EXPRARGS )
   | if ( EXPR ) then STATEMENTS end
   | if ( EXPR ) then STATEMENTS_1 else STATEMENTS_2 end
   | while ( EXPR ) do
@@ -110,9 +84,13 @@ STATEMENT ::=
 # An expression is one of the following:
 #   • The unit value or a primitive integer, boolean, or string
 #   • An identifier, i.e. a variable's name (which could be a list's name)
-#   • A list access at some position
+#   • An empty list ([])
+#   • A (non-empty) list with some contents
+#   • A list access at some position (must be an integer within bounds)
+#   • Element concatenation (at the head of the list)
+#   • List concatenation (glue two lists together, maintain relative order)
 #   • The length of a list (could be a sublist)
-#   • A pair of expressions
+#   • A pair of expressions (i.e. a pairing operator)
 #   • The projection functions that find the left-half and the right-half of a pair, respectively
 #   • An anonymous function from an identifier to expressions (i.e. no curried functions)
 #   • Function application, but can only apply arguments to a named function (i.e. take value of)
@@ -129,8 +107,12 @@ EXPR ::=
   | CHAR
   | STRING
   | ID
+  | [ ]
+  | [ CONTENTS ]
   | LIST [ EXPR ]
-  | length ( PARLIST )
+  | EXPR_1 :: EXPR_2
+  | EXPR_1 <-> EXPR_2
+  | length ( ID )
   | ( EXPR_1 , EXPR_2 )
   | left EXPR | right EXPR
   | lambda ID -> EXPR
@@ -143,17 +125,17 @@ EXPR ::=
       CASES
     end
 
+# Contents (of a list) consist of one or more expressions joined together.
+CONTENTS ::=
+  | EXPR
+  | EXPR ; CONTENTS
+
 # Cases for a pattern match; at least one case must be specified for a given match. If a
 #   match is to be used imperatively, then we use the fact that it is an expression.
 CASES ::=
   | case PATTERN -> EXPR
   | case PATTERN -> EXPR
     CASES
-
-# A partial list is a sublist of a list (the whole list itself or subportions of it).
-PARLIST ::=
-  | ID
-  | PARLIST [ INT ]
 
 # The contents of an argument are either empty or non-empty.
 EXPRARGS ::=
@@ -170,11 +152,11 @@ EXPRARG ::=
   | EXPR
   | EXPR : TYPE
 
-# A pattern (to match over) is either a wildcard _, a primitive, a user-defined constructor, or a pair.
-#   Note that we do not permit pattern matching over strings or list types. Its use is only apparent
+# A pattern (to match over) is either a wildcard _, an empty list, a list pattern, a primitive, a user-defined
+#   constructor, or a pair. Note that we do not permit pattern matching over strings. Its use is only apparent
 #   for user-defined data types and pairs.
 PATTERN ::=
-  | _ | () | INT | LONG | BOOL | CHAR | ID | CONSTRUCTOR ( PATTERN ) | ( PATTERN_1, PATTERN_2 )
+  | _ | [ ] | PAT_1 :: PAT_2 | () | INT | LONG | BOOL | CHAR | ID | CONSTRUCTOR ( PATTERN ) | ( PAT_1, PAT_2 )
 
 # A binary operation is one of the following:
 #   • Addition, subtraction, multiplication, division, or modular arithmetic
