@@ -16,10 +16,8 @@ Upcoming Features
 ----
 We will update this list with upcoming features in future builds as we get them up and rolling.
 
-* Adding support for comments.
-  + That is, in-line comments as well as out-of-line block-style comments.
-* Adding richer type-declarations.
 * Adding support for interface files, namely those with the `.iro` extension.
+* Adding higher-order functions. We have a version of that right now, but nothing crazy.
 
 Privacy Policy
 ----
