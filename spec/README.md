@@ -23,11 +23,21 @@ DECLS ::=
   |
   | DECL DECLS
 
+# An optional left parenthesis is either empty or a left parenthesis.
+LPAREN ::=
+  |
+  | (
+  
+# An optional right parenthesis is either empty or a right parenthesis.
+RPAREN ::=
+  |
+  | )
+
 # A standalone declaration consists of one of the following:
 #   • A type declaration, which could consist of one or more constructors
-#   • A standard declaration, which could be normal, a constant, or even mutable (can use := only if mutable)
-#   • A function declaration with or without a type annotation, consisting of one or more arguments and
-#       a body of statements
+#   • A standard declaration, which could be normal or mutable (can use := only if mutable)
+#   • A function declaration with or without a type annotation, consisting of one or more arguments
+#       and a body of statements
 DECL ::=
   | type ID = CONSTRUCTORS
   | STDECL
@@ -73,10 +83,10 @@ STATEMENT ::=
   | DECL
   | ID := EXPR
   | ID [ EXPR_1 ] := EXPR_2
-  | call ID ( EXPRARGS )
-  | if ( EXPR ) then STATEMENTS end
-  | if ( EXPR ) then STATEMENTS_1 else STATEMENTS_2 end
-  | while ( EXPR ) do
+  | call ID LPAREN EXPRARGS RPAREN
+  | if LPAREN EXPR RPAREN then STATEMENTS end
+  | if LPAREN EXPR RPAREN then STATEMENTS_1 else STATEMENTS_2 end
+  | while LPAREN EXPR RPAREN do
       STATEMENTS
     done
   | give EXPR
@@ -96,7 +106,7 @@ STATEMENT ::=
 #   • Function application, but can only apply arguments to a named function (i.e. take value of)
 #   • A binary relation on expressions (binary operations)
 #   • A unary relation on expressions (unary operations)
-#   • An if-then-else expression (no if-then expressions permitted for simplicity)
+#   • An if-then-else expression (effectively a ternary operator)
 #   • A user-defined type constructor, called with an expression as an argument
 #   • A pattern-matching device for constructors, pairs, and primitive datatypes
 EXPR ::=
@@ -112,15 +122,15 @@ EXPR ::=
   | LIST [ EXPR ]
   | EXPR_1 :: EXPR_2
   | EXPR_1 <-> EXPR_2
-  | length ( ID )
+  | length LPAREN ID RPAREN
   | ( EXPR_1 , EXPR_2 )
   | left EXPR | right EXPR
   | lambda ID -> EXPR
-  | take ID ( EXPRARGS )
+  | take ID LPAREN EXPRARGS RPAREN
   | EXPR_1 BINOP EXPR_2
   | UNOP EXPR
   | if EXPR_1 then EXPR_2 else EXPR_3
-  | CONSTRUCTOR ( EXPR )
+  | CONSTRUCTOR LPAREN EXPR RPAREN
   | match EXPR with
       CASES
     end
@@ -152,11 +162,11 @@ EXPRARG ::=
   | EXPR
   | EXPR : TYPE
 
-# A pattern (to match over) is either a wildcard _, an empty list, a list pattern, a primitive, a user-defined
-#   constructor, or a pair. Note that we do not permit pattern matching over strings. Its use is only apparent
-#   for user-defined data types and pairs.
+# A pattern (to match over) is either a wildcard _, an empty list, a list pattern, a primitive, a user-
+#   defined constructor, or a pair. Note that we do not permit pattern matching over strings. Its use is
+#   only apparent for user-defined data types and pairs.
 PATTERN ::=
-  | _ | [ ] | PAT_1 :: PAT_2 | () | INT | LONG | BOOL | CHAR | ID | CONSTRUCTOR ( PATTERN ) | ( PAT_1, PAT_2 )
+  | _ | [ ] | P_1 :: P_2 | () | INT | LONG | BOOL | CHAR | ID | CONSTRUCTOR LPAREN PATTERN RPAREN | ( P_1, P_2 )
 
 # A binary operation is one of the following:
 #   • Addition, subtraction, multiplication, division, or modular arithmetic
