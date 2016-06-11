@@ -1,0 +1,10 @@
+record color =
+  struct
+    red   : int;
+    green : int;
+    blue  : int
+  end
+
+const var RED   = new color {red = 255; green = 0; blue = 0}
+const var GREEN = new color {red = 0; green = 255; blue = 0}
+const var BLUE  = new color {red = 0; green = 0; blue = 255}
