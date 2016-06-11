@@ -84,13 +84,15 @@ STATEMENTS ::=
 #   • A declaration of any type, including functions (e.g. local functions within functions)
 #   • An assignment of an expression to a variable (which could be a list's name)
 #   • An assignment of an expression to a list at some position
+#   • A call to a subroutine/function defined earlier (i.e. do action with side effects)
 #   • An if-then statement or an if-then-else statement
 #   • A while statement, whose body contains statements
-#   • A return statement, for values returned by a function (`give`)
+#   • A return statement, for values returned by a function (i.e. give back)
 STATEMENT ::=
   | DECL
   | ID := EXPR
   | LIST [ EXPR_1 ] := EXPR_2
+  | do ID ( EXPRARGS )
   | if ( EXPR ) then STATEMENTS end
   | if ( EXPR ) then STATEMENTS_1 else STATEMENTS_2 end
   | while ( EXPR ) do
@@ -106,7 +108,7 @@ STATEMENT ::=
 #   • A pair of expressions
 #   • The projection functions that find the left-half and the right-half of a pair, respectively
 #   • An anonymous function from an identifier to expressions (i.e. no curried functions)
-#   • Function application (can only apply arguments to a named function)
+#   • Function application, but can only apply arguments to a named function (i.e. take value of)
 #   • A binary relation on expressions (binary operations)
 #   • A unary relation on expressions (unary operations)
 #   • An if-then-else expression (no if-then expressions permitted for simplicity)
@@ -125,7 +127,7 @@ EXPR ::=
   | ( EXPR_1 , EXPR_2 )
   | left EXPR | right EXPR
   | lambda ID -> EXPR
-  | ID ( EXPRARGS )
+  | take ID ( EXPRARGS )
   | EXPR_1 BINOP EXPR_2
   | UNOP EXPR
   | if EXPR_1 then EXPR_2 else EXPR_3
