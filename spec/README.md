@@ -2,7 +2,7 @@ Syntax
 ----
 
 The syntax of `Ro` is defined below, presented in Backus-Naur normal form (BNF).
-Notice some similarities to existing languages such as `Python`, `Java`, and `OCaml`.
+Notice some similarities to existing languages such as `Python`, `Scala`, and `OCaml`.
 `Ro` draws inspiration from each of these programming languages. Note that terminal
 productions below are shown in lowercase, while non-terminal symbols are shown in
 uppercase.
@@ -47,11 +47,10 @@ RPAREN ::=
 #   • A function declaration with or without a type annotation, consisting of
 #       one or more arguments and a body of statements
 DECL ::=
-  | type ID = CONSTRUCTORS
-  | record ID = struct FIELDS end
+  | typedef ID = CONSTRUCTORS
+  | record ID = struct { FIELDS }
   | error ID
   | STDECL
-  | const STDECL
   | mutable STDECL
   | def ID ARGS =
       STATEMENTS
@@ -111,8 +110,8 @@ STATEMENTS ::=
 #   • A return statement, for values returned by a function (i.e. give back)
 STATEMENT ::=
   | DECL
-  | ID := EXPR
-  | ID . ID := EXPR
+  | ID := LPAREN EXPR RPAREN
+  | ID . ID := LPAREN EXPR RPAREN
   | ID [ EXPR_1 ] := EXPR_2
   | call ID LPAREN EXPRARGS RPAREN
   | if LPAREN EXPR RPAREN then STATEMENTS end
@@ -121,8 +120,8 @@ STATEMENT ::=
       STATEMENTS
     done
   | raise ID
-  | raise ID STRING
-  | give EXPR
+  | raise ID LPAREN STRING RPAREN
+  | give LPAREN EXPR RPAREN
   
 # An expression is one of the following:
 #   • The unit value or a primitive integer/float, boolean, or char/string
@@ -164,7 +163,7 @@ EXPR ::=
   | [ CONTENTS ]
   | LIST [ EXPR ]
   | EXPR_1 :: EXPR_2
-  | EXPR_1 <-> EXPR_2
+  | EXPR_1 >|< EXPR_2
   | length LPAREN ID RPAREN
   | ( EXPR_1 , EXPR_2 )
   | left EXPR | right EXPR
@@ -184,7 +183,7 @@ CONTENTS ::=
   | EXPR ; CONTENTS
 
 # Cases for a pattern match; at least one case must be specified for a given match.
-#   If a match is to be used imperatively, then we use it as an expression.
+#   Evidently, matches cannot be used imperatively. This is a limitation of the language.
 CASES ::=
   | case PATTERN -> EXPR
   | case PATTERN -> EXPR
@@ -231,7 +230,7 @@ UNOP ::=
 # Arguments to a function are either empty or non-empty.
 ARGS ::=
   |
-  | ( NON-EMPTY-ARGS )
+  | LPAREN NON-EMPTY-ARGS RPAREN
 
 # A non-empty argument is either a single argument or more than one argument.
 NON-EMPTY-ARGS ::=
