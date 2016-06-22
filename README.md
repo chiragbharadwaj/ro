@@ -18,6 +18,7 @@ We will update this list with upcoming features in future builds as we get them 
 
 * Adding support for interface files, namely those with the `.iro` extension.
 * Adding higher-order functions. We have a version of that right now, but nothing crazy.
+* Adding support for Python-like list/string/tuple slicing natively.
 * Changing the language so that it is more expression-based instead of statement-based.
 * Adding built-in support for `future` and `thread` keywords.
 
