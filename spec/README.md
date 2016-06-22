@@ -41,6 +41,7 @@ RPAREN ::=
 # A standalone declaration consists of one of the following:
 #   • A type declaration, which could consist of one or more constructors
 #   • A record type declaration, which could have many fields (always mutable)
+#   • An alias to another type (textual substitution performed at assembler/link-time)
 #   • An error-type declaration, denoted by an identifier for the name
 #   • A standard declaration, which could be normal or mutable (can use := only
 #       if mutable)
@@ -49,6 +50,7 @@ RPAREN ::=
 DECL ::=
   | typedef ID = CONSTRUCTORS
   | record ID = struct { FIELDS }
+  | alias ID = TYPE
   | error ID
   | STDECL
   | mutable STDECL
@@ -87,8 +89,13 @@ FIELDS-DECL ::=
 
 # A constructor is either a single constructor or more than one of them.
 CONSTRUCTORS ::=
+  | NAME
+  | NAME or CONSTRUCTORS
+
+# A constructor name is just a primitive constructor, with or without arguments
+NAME ::=
+  | CONSTRUCTOR
   | CONSTRUCTOR of TYPE
-  | CONSTRUCTOR of TYPE or CONSTRUCTORS
 
 # Statements are either empty or consist of one or more statements.
 STATEMENTS ::=
@@ -146,7 +153,7 @@ STATEMENT ::=
 #   • A binary relation on expressions (binary operations)
 #   • A unary relation on expressions (unary operations)
 #   • An if-then-else expression (effectively a ternary operator)
-#   • A user-defined type constructor, called with an expression as an argument
+#   • A user-defined type constructor, with or without an expression as an argument
 #   • A pattern-matching device for constructors, pairs, and primitive datatypes
 EXPR ::=
   | ()
@@ -162,8 +169,8 @@ EXPR ::=
   | [ ]
   | [ CONTENTS ]
   | LIST [ EXPR ]
-  | EXPR_1 :: EXPR_2
-  | EXPR_1 >|< EXPR_2
+  | LPAREN EXPR_1 :: EXPR_2 RPAREN
+  | LPAREN EXPR_1 >|< EXPR_2 RPAREN
   | length LPAREN ID RPAREN
   | ( EXPR_1 , EXPR_2 )
   | left EXPR | right EXPR
@@ -172,7 +179,7 @@ EXPR ::=
   | EXPR_1 BINOP EXPR_2
   | UNOP EXPR
   | LPAREN if EXPR_1 then EXPR_2 else EXPR_3 RPAREN
-  | CONSTRUCTOR LPAREN EXPR RPAREN
+  | CONSTRUCTOR | CONSTRUCTOR LPAREN EXPR RPAREN
   | match EXPR with
       CASES
     end
@@ -244,22 +251,22 @@ ARG ::=
 
 # A type (for annotation purposes) is one of the following:
 #   • A unit value
-#   • A primitive type, like int, bool, or string
+#   • A primitive type, like Integer, Bool, Char, or String
 #   • A pair of types
 #   • A list, whose elements are homogeneously of one type
-#   • A user-defined type/record, specified by an identifier
+#   • A user-defined type/record/alias, specified by an identifier
 #   • A function type (for lambda expressions captured by a variable)
 #   • An option type (for safe null-ing checks)
 #   • A polymorphic type (only up to 26, due to Greek limitations)
 TYPE ::=
   | Unit
-  | Int
+  | Integer
   | Long
   | Bool
   | Char
   | String
   | TYPE_1 * TYPE_2
-  | TYPE list
+  | [ TYPE ]
   | ID
   | TYPE -> TYPE
   | TYPE ?
