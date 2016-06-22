@@ -129,6 +129,8 @@ STATEMENT ::=
 #   • An identifier, i.e. a variable's name (which could be a list's name or a
 #       record's name)
 #   • A record's field name
+#   • An optional type with value nil
+#   • An optional type with Some expression stored as a value
 #   • An empty list ([])
 #   • A (non-empty) list with some contents
 #   • A list access at some position (must be an integer within bounds)
@@ -156,6 +158,8 @@ EXPR ::=
   | STRING
   | ID
   | ID . ID
+  | nil
+  | Some LPAREN EXPR RPAREN
   | [ ]
   | [ CONTENTS ]
   | LIST [ EXPR ]
@@ -202,12 +206,12 @@ EXPRARG ::=
   | EXPR : TYPE
 
 # A pattern (to match over) is either a wildcard _, an empty list, a list pattern,
-#   a primitive, a user-defined constructor, or a pair. Note that we do not permit
-#   pattern matching over strings. Its use is only apparent for user-defined data
-#   types and pairs.
+#   a primitive, a user-defined constructor, a pair, or optional-type related patterns.
+#   Note that we do not permit pattern matching over strings. Its use is only apparent
+#   for user-defined data types and pairs.
 PATTERN ::=
-  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | INT | LONG | BOOL | CHAR | ID
-  | CONSTRUCTOR LPAREN PATTERN RPAREN | ( PATTERN_1, PATTERN_2 )
+  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | INT | LONG | BOOL | CHAR | ID | nil
+  | CONSTRUCTOR LPAREN PATTERN RPAREN | ( PATTERN_1, PATTERN_2 ) | Some LPAREN PATTERN RPAREN
 
 # A binary operation is one of the following:
 #   • Addition, subtraction, multiplication, division, or modular arithmetic
@@ -246,6 +250,7 @@ ARG ::=
 #   • A list, whose elements are homogeneously of one type
 #   • A user-defined type/record, specified by an identifier
 #   • A function type (for lambda expressions captured by a variable)
+#   • An option type (for safe null-ing checks)
 TYPE ::=
   | unit
   | int
@@ -257,6 +262,7 @@ TYPE ::=
   | TYPE list
   | ID
   | TYPE -> TYPE
+  | TYPE ?
 
 # An extended type is either a regular type or a special void type (return nothing).
 EXTYPE ::=
