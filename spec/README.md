@@ -103,7 +103,7 @@ STATEMENTS ::=
 #   • An assignment of an expression to a record field
 #   • An assignment of an expression to a list at some position
 #   • A call to a subroutine/function defined earlier (i.e. do action with side
-#       effects)
+#       effects... called subroutine MUST have a return type of Void)
 #   • An if-then statement or an if-then-else statement
 #   • A while statement, whose body contains statements
 #   • Raise an exception, with or without a body message
@@ -128,7 +128,7 @@ STATEMENT ::=
 #   • An identifier, i.e. a variable's name (which could be a list's name or a
 #       record's name)
 #   • A record's field name
-#   • An optional type with value nil
+#   • An optional type with value Nil
 #   • An optional type with Some expression stored as a value
 #   • An empty list ([])
 #   • A (non-empty) list with some contents
@@ -157,7 +157,7 @@ EXPR ::=
   | STRING
   | ID
   | ID . ID
-  | nil
+  | Nil
   | Some LPAREN EXPR RPAREN
   | [ ]
   | [ CONTENTS ]
@@ -171,7 +171,7 @@ EXPR ::=
   | take ID LPAREN EXPRARGS RPAREN
   | EXPR_1 BINOP EXPR_2
   | UNOP EXPR
-  | if EXPR_1 then EXPR_2 else EXPR_3
+  | LPAREN if EXPR_1 then EXPR_2 else EXPR_3 RPAREN
   | CONSTRUCTOR LPAREN EXPR RPAREN
   | match EXPR with
       CASES
@@ -209,7 +209,7 @@ EXPRARG ::=
 #   Note that we do not permit pattern matching over strings. Its use is only apparent
 #   for user-defined data types and pairs.
 PATTERN ::=
-  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | INT | LONG | BOOL | CHAR | ID | nil
+  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | INT | LONG | BOOL | CHAR | ID | Nil
   | CONSTRUCTOR LPAREN PATTERN RPAREN | ( PATTERN_1, PATTERN_2 ) | Some LPAREN PATTERN RPAREN
 
 # A binary operation is one of the following:
@@ -250,21 +250,23 @@ ARG ::=
 #   • A user-defined type/record, specified by an identifier
 #   • A function type (for lambda expressions captured by a variable)
 #   • An option type (for safe null-ing checks)
+#   • A polymorphic type (only up to 26, due to Greek limitations)
 TYPE ::=
-  | unit
-  | int
-  | long
-  | bool
-  | char
-  | string
+  | Unit
+  | Int
+  | Long
+  | Bool
+  | Char
+  | String
   | TYPE_1 * TYPE_2
   | TYPE list
   | ID
   | TYPE -> TYPE
   | TYPE ?
+  | 'CHAR
 
 # An extended type is either a regular type or a special void type (return nothing).
 EXTYPE ::=
-  | void
+  | Void
   | TYPE
 ```
