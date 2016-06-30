@@ -51,7 +51,7 @@ DECL ::=
   | type ID = CONSTRUCTORS
   | record ID = struct { FIELDS }
   | alias ID = TYPE
-  | error ID
+  | Error ID
   | STDECL
   | mutable STDECL
   | def ID ARGS =
@@ -137,8 +137,8 @@ STATEMENT ::=
 #   • An identifier, i.e. a variable's name (which could be a list's name or a
 #       record's name)
 #   • A record's field name
-#   • An optional type with value Nil
-#   • An optional type with Some expression stored as a value
+#   • An optional type with value None
+#   • An optional type with Just some expression stored as a value
 #   • An empty list ([])
 #   • A (non-empty) list with some contents
 #   • A list access at some position (must be an integer within bounds)
@@ -231,10 +231,11 @@ PATTERN ::=
 #   • High-multiplication for 64/128-bit support (**)
 #   • A comparision (LT, GT, EQ, LE, GE, NE)
 #   • String concatenation (^)
-#   • Logical or bitwise operations (and, or, xor), depending on the types used
-#       as arguments
+#   • Bit-shifting operations (sll=<<, srl=>>, sra=>>>)
+#   • Logical or bitwise operations (and=&, or=|, xor=(+)), depending on the types used
+#       as arguments (lots of type-checking necessary)
 BINOP ::=
-  | + | - | * | / | ** | < | > | = | <= | >= | \= | ^ | and | or | xor | mod
+  | + | - | * | / | ** | < | > | = | <= | >= | \= | ^ | << | >> | >>> | & | "|" | (+) | mod
 
 # A unary operation is either logical/bitwise negation (depending on type used)
 #   or arithmetic negation.
