@@ -3,8 +3,14 @@ use io
 # Capture a lambda expression in a variable to see what happens.
 var x = lambda y -> y + 1
 
-# Main execution block. Prints "4" to the screen.
-def main (args : string list) : int =
-  printf "%d" (x 3) # Should print out 4.
+# Some higher-order functions going on here. Does it work correctly?
+def succApp (f : Int -> Int, num : Int) : Int =
+  return 1 + f num
+end
+
+# Main execution block. Prints "4" and "5" to the screen.
+def main (args : [String]) : Int =
+  printf "%d" (x 3)         # Should print out 4.
+  printf "%d" (succApp x 3) # Should print out 5.
   give 0
 end
