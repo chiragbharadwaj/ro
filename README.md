@@ -16,13 +16,15 @@ Upcoming Features
 ----
 We will update this list with upcoming features in future builds as we get them up and rolling.
 
-* Adding support for interface files, namely those with the `.iro` extension.
+* Adding support for interface files, namely those with the `.iro` extension. `implements`?
 * Adding true higher-order functions. We have a version of that right now, but nothing crazy.
 * Adding support for Python-like list/string/tuple slicing natively.
 * Changing the language so that it is more expression-based instead of statement-based.
 * Adding references as first-order types so that users can do SAFE pointer work, if desired.
 * Changing mutable variables so `mutable` ends up being a first-order type instead of mixed in.
-* Adding built-in support for `future` and `thread` keywords.
+* Adding built-in support for `Thread` types for concurrency/multicore purposes.
+* Adding a first-order module system so that things can be classed easily. `Functor`s, maybe?
+* Adding built-in support for `Future`s and `Promise`s for asynchronous computations.
 
 Privacy Policy
 ----
