@@ -1,9 +1,9 @@
-error NotEqual
+Error NotEqual
 
 # Checks to see if the two specified items are equal. If they are, nothing
 # happens. If they are not, then a NotEqual exception is raised.
 #   - [item1] An item of polymorphic type 'a.
 #   - [item2] Another item of the same type 'a.
-def assertEq (item1 : 'a, item2 : 'a) : Void =
+def assertEq (item1 : 'a) (item2 : 'a) : Void =
   if item1 \= item2 then raise NotEqual "These two objects are not equal." end
 end
