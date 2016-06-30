@@ -2,7 +2,7 @@ Syntax
 ----
 
 The syntax of `Ro` is defined below, presented in Backus-Naur normal form (BNF).
-Notice some similarities to existing languages such as `Python`, `Scala`, and `OCaml`.
+Notice some similarities to existing languages such as `Python`, `Haskell`, and `OCaml`.
 `Ro` draws inspiration from each of these programming languages. Note that terminal
 productions below are shown in lowercase, while non-terminal symbols are shown in
 uppercase.
