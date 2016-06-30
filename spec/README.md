@@ -84,6 +84,8 @@ STDECL ::=
   
 # A declaration of fields for record instantiation.
 FIELDS-DECL ::=
+  | EXPR
+  | EXPR ; FIELDS-DECL
   | ID = EXPR
   | ID = EXPR ; FIELDS-DECL
 
