@@ -4,7 +4,7 @@ use io
 var x = lambda y -> y + 1
 
 # Some higher-order functions going on here. Does it work correctly?
-def succApp (f : Int -> Int, num : Int) : Int =
+def succApp (f : Int -> Int) (num : Int) : Int =
   return 1 + f num
 end
 
