@@ -198,8 +198,8 @@ CONTENTS ::=
 # Cases for a pattern match; at least one case must be specified for a given match.
 #   Evidently, matches cannot be used imperatively. This is a limitation of the language.
 CASES ::=
-  | case PATTERN -> EXPR
-  | case PATTERN -> EXPR
+  | "|" PATTERN -> EXPR
+  | "|" PATTERN -> EXPR
     CASES
 
 # The contents of an argument are either empty or non-empty.
