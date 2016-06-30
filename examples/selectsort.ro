@@ -30,16 +30,16 @@ end
 def functionalSort (arr : [Int]) : [Int] =
   def selectR head acc tail =
     give match tail with
-      case []      -> head :: functionalSort acc
-      case x :: xs ->
+      | []      -> head :: functionalSort acc
+      | x :: xs ->
         if x < head then
           selectR x (head :: acc) xs
         else
           selectR head (x :: acc) xs
   end
   give match arr with
-    case []     -> []
-    case h :: t -> selectR h [] t
+    | []     -> []
+    | h :: t -> selectR h [] t
 end
 
 # Main execution block. Checks to make sure that both sorting algorithms work
