@@ -180,12 +180,12 @@ EXPR ::=
   | ( EXPR_1 , EXPR_2 )
   | front LPAREN EXPR RPAREN | back LPAREB EXPR RPAREN
   | lambda ID -> EXPR
-  | take ID LPAREN EXPRARGS RPAREN
+  | ID LPAREN EXPRARGS RPAREN
   | EXPR_1 BINOP EXPR_2
   | UNOP EXPR
   | LPAREN if EXPR_1 then EXPR_2 else EXPR_3 RPAREN
   | CONSTRUCTOR | CONSTRUCTOR LPAREN EXPR RPAREN
-  | Left LPAREN EXPR RPAREN | Right LPAREN EXPR RPAREN
+  | left LPAREN EXPR RPAREN | right LPAREN EXPR RPAREN
   | match EXPR with
       CASES
     end
@@ -245,12 +245,12 @@ UNOP ::=
 # Arguments to a function are either empty or non-empty.
 ARGS ::=
   |
-  | LPAREN NON-EMPTY-ARGS RPAREN
+  | NON-EMPTY-ARGS
 
 # A non-empty argument is either a single argument or more than one argument.
 NON-EMPTY-ARGS ::=
-  | ARG
-  | ARG , NON-EMPTY-ARGS
+  | LPAREN ARG RPAREN
+  | LPAREN ARG RPAREN NON-EMPTY-ARGS
 
 # A standalone argument is an identifier, with or without a special type annotation.
 ARG ::=
@@ -271,7 +271,7 @@ ARG ::=
 TYPE ::=
   | Unit
   | NUMTYPE
-  | unsigned NUMTYPE
+  | Unsigned NUMTYPE
   | Bool
   | Char
   | String
