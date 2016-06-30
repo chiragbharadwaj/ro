@@ -27,7 +27,7 @@ end
 #   - [n]   The integer for which the hailstone must be computed.
 #   - [arr] A list of mappings (by index) from integers to number of steps.
 #   - [s]   A lower bound on all of the mappings that have been computed so far.
-def memoHailstone (n : Int, arr : [Int], s : Int) : Int =
+def memoHailstone (n : Int) (arr : [Int]) (s : Int) : Int =
   if n < s and arr[n] \= 0 then
     give arr[n]
   end
