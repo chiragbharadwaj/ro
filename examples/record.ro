@@ -1,4 +1,4 @@
-record Color = struct { red : int; green : int; blue : int }
+record Color = struct { red : Int; green : Int; blue : Int }
 
 # These all use explicit field-naming.
 var RED   = new Color { red = 255; green = 0;   blue = 0   }
