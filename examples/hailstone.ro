@@ -1,7 +1,7 @@
 # Computes the hailstone sequence (i.e. the number of steps) for a particular
-#   integer by doing recursive calls.
+#  integer by doing recursive calls.
 #   - [n] The integer for which the hailstone must be computed.
-def rec_hailstone (n : int) : int =
+def rec_hailstone (n : Int) : Int =
   if n = 0 then
     give 0
   else
@@ -10,9 +10,9 @@ def rec_hailstone (n : int) : int =
 end
 
 # Computes the hailstone sequence (i.e. the number of steps) for a particular
-#   integer by using an iterative loop.
+#  integer by using an iterative loop.
 #   - [n] The integer for which the hailstone must be computed.
-def iter_hailstone (n : int) : int =
+def iter_hailstone (n : Int) : Int =
   mutable var i = 0
   while n \= 1 do
     i := i + 1
@@ -22,12 +22,12 @@ def iter_hailstone (n : int) : int =
 end
 
 # Computes the hailstone sequence (i.e. the number of steps) for a particular
-#   integer by using the dynamic programming technique. Assumes that the array
-#   passed in is mutable. This is an optimized version of rec_hailstone.
+#  integer by using the dynamic programming technique. Assumes that the array
+#  passed in is mutable. This is an optimized version of rec_hailstone.
 #   - [n]   The integer for which the hailstone must be computed.
 #   - [arr] A list of mappings (by index) from integers to number of steps.
 #   - [s]   A lower bound on all of the mappings that have been computed so far.
-def memo_hailstone (n : int, arr : int list, s : int) : int =
+def memo_hailstone (n : Int, arr : [Int], s : Int) : Int =
   if n < s and arr[n] \= 0 then
     give arr[n]
   end
