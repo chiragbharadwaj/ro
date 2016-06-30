@@ -147,7 +147,7 @@ STATEMENT ::=
 #   • The length of a list (could be a sublist)
 #   • A pair of expressions (i.e. a pairing operator)
 #   • The projection functions that find the left-half and the right-half of a
-#       pair, respectively (called the head and tail of the pair)
+#       pair, respectively (called the front and back of the pair)
 #   • An anonymous function from an identifier to expressions (i.e. no curried
 #       functions)
 #   • Function application, but can only apply arguments to a named function
@@ -178,7 +178,7 @@ EXPR ::=
   | LPAREN EXPR_1 >|< EXPR_2 RPAREN
   | length LPAREN ID RPAREN
   | ( EXPR_1 , EXPR_2 )
-  | head LPAREN EXPR RPAREN | tail LPAREB EXPR RPAREN
+  | front LPAREN EXPR RPAREN | back LPAREB EXPR RPAREN
   | lambda ID -> EXPR
   | take ID LPAREN EXPRARGS RPAREN
   | EXPR_1 BINOP EXPR_2
