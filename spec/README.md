@@ -77,7 +77,7 @@ STDECL ::=
   | var ID : TYPE = EXPR
   | ID = new ID { FIELDS-DECL }
   | ID : TYPE = new ID { FIELDS-DECL }
-  | list ID [ ]
+  | ID [ ]
   | ID [ ] : TYPE
   | list ID = EXPR
   | ID : TYPE = EXPR
