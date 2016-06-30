@@ -9,7 +9,7 @@ uppercase.
 
 ```
 # These are symbols that are "primitive" and already well-defined.
-predefined symbols: FILE, INT, LONG, BOOL, CHAR, STRING, ID, CONSTRUCTOR
+predefined symbols: FILE, INT, LONG, FLOAT, BOOL, CHAR, STRING, ID, CONSTRUCTOR
 
 # A program is any number of import statements followed by a series of declarations.
 PROGRAM ::=
@@ -42,7 +42,7 @@ RPAREN ::=
 #   • A type declaration, which could consist of one or more constructors
 #   • A record type declaration, which could have many fields (always mutable)
 #   • An alias to another type (textual substitution performed at assembler/link-time)
-#   • An error-type declaration, denoted by an identifier for the name
+#   • An error-type declaration, denoted by an identifier for the name
 #   • A standard declaration, which could be normal or mutable (can use := only
 #       if mutable)
 #   • A function declaration with or without a type annotation, consisting of
@@ -159,13 +159,14 @@ EXPR ::=
   | ()
   | INT
   | LONG
+  | FLOAT
   | BOOL
   | CHAR
   | STRING
   | ID
   | ID . ID
-  | Nil
-  | Some LPAREN EXPR RPAREN
+  | None
+  | Just LPAREN EXPR RPAREN
   | [ ]
   | [ CONTENTS ]
   | LIST [ EXPR ]
@@ -216,8 +217,8 @@ EXPRARG ::=
 #   Note that we do not permit pattern matching over strings. Its use is only apparent
 #   for user-defined data types and pairs.
 PATTERN ::=
-  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | INT | LONG | BOOL | CHAR | ID | Nil
-  | CONSTRUCTOR LPAREN PATTERN RPAREN | ( PATTERN_1, PATTERN_2 ) | Some LPAREN PATTERN RPAREN
+  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | INT | LONG | FLOAT | BOOL | CHAR | ID | None
+  | CONSTRUCTOR LPAREN PATTERN RPAREN | ( PATTERN_1, PATTERN_2 ) | Just LPAREN PATTERN RPAREN
 
 # A binary operation is one of the following:
 #   • Addition, subtraction, multiplication, division, or modular arithmetic
@@ -251,7 +252,7 @@ ARG ::=
 
 # A type (for annotation purposes) is one of the following:
 #   • A unit value
-#   • A primitive type, like Integer, Bool, Char, or String
+#   • A primitive type, like Integer, Long, Float, Bool, Char, or String
 #   • A pair of types
 #   • A list, whose elements are homogeneously of one type
 #   • A user-defined type/record/alias, specified by an identifier
@@ -262,14 +263,15 @@ TYPE ::=
   | Unit
   | Integer
   | Long
+  | Float
   | Bool
   | Char
   | String
-  | TYPE_1 * TYPE_2
+  | LPAREN TYPE_1 * TYPE_2 RPAREN
   | [ TYPE ]
   | ID
-  | TYPE -> TYPE
-  | TYPE ?
+  | LPAREN TYPE_1 -> TYPE_2 RPAREN
+  | Maybe TYPE | TYPE ?
   | 'CHAR
 
 # An extended type is either a regular type or a special void type (return nothing).
