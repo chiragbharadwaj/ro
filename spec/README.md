@@ -9,7 +9,7 @@ uppercase.
 
 ```
 # These are symbols that are "primitive" and already well-defined.
-predefined symbols: FILE, INT, LONG, FLOAT, BOOL, CHAR, STRING, ID, CONSTRUCTOR
+predefined symbols: FILE, BYTE, INT, LONG, FLOAT, BOOL, CHAR, STRING, ID, CONSTRUCTOR
 
 # A program is any number of import statements followed by a series of declarations.
 PROGRAM ::=
@@ -131,7 +131,7 @@ STATEMENT ::=
   | give LPAREN EXPR RPAREN
   
 # An expression is one of the following:
-#   • The unit value or a primitive integer/float, boolean, or char/string
+#   • The unit value or a primitive byte, integer/float, boolean, or char/string
 #   • An identifier, i.e. a variable's name (which could be a list's name or a
 #       record's name)
 #   • A record's field name
@@ -157,6 +157,7 @@ STATEMENT ::=
 #   • A pattern-matching device for constructors, pairs, and primitive datatypes
 EXPR ::=
   | ()
+  | BYTE
   | INT
   | LONG
   | FLOAT
@@ -217,7 +218,7 @@ EXPRARG ::=
 #   Note that we do not permit pattern matching over strings. Its use is only apparent
 #   for user-defined data types and pairs.
 PATTERN ::=
-  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | INT | LONG | FLOAT | BOOL | CHAR | ID | None
+  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | BYTE | INT | LONG | FLOAT | BOOL | CHAR | ID | None
   | CONSTRUCTOR LPAREN PATTERN RPAREN | ( PATTERN_1, PATTERN_2 ) | Just LPAREN PATTERN RPAREN
 
 # A binary operation is one of the following:
@@ -252,7 +253,8 @@ ARG ::=
 
 # A type (for annotation purposes) is one of the following:
 #   • A unit value
-#   • A primitive type, like Integer, Long, Float, Bool, Char, or String
+#   • A primitive type, like Byte, Int/Integer, Long, Float, Bool, Char, or String
+#   • The unsigned versions of these aforementioned primitive types
 #   • A pair of types
 #   • A list, whose elements are homogeneously of one type
 #   • A user-defined type/record/alias, specified by an identifier
@@ -261,9 +263,8 @@ ARG ::=
 #   • A polymorphic type (only up to 26, due to Greek limitations)
 TYPE ::=
   | Unit
-  | Integer
-  | Long
-  | Float
+  | NUMTYPE
+  | unsigned NUMTYPE
   | Bool
   | Char
   | String
@@ -273,6 +274,13 @@ TYPE ::=
   | LPAREN TYPE_1 -> TYPE_2 RPAREN
   | Maybe TYPE | TYPE ?
   | 'CHAR
+
+# Numerical types are kinds that represent actual numbers.
+NUMTYPE ::=
+  | Byte
+  | Int | Integer
+  | Long
+  | Float
 
 # An extended type is either a regular type or a special void type (return nothing).
 EXTYPE ::=
