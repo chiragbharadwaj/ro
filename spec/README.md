@@ -48,7 +48,7 @@ RPAREN ::=
 #   • A function declaration with or without a type annotation, consisting of
 #       one or more arguments and a body of statements
 DECL ::=
-  | typedef ID = CONSTRUCTORS
+  | type ID = CONSTRUCTORS
   | record ID = struct { FIELDS }
   | alias ID = TYPE
   | error ID
@@ -71,15 +71,14 @@ FIELDS ::=
 # A standard declaration consists of one of the following:
 #   • A variable declaration, with or without a type annotation
 #   • A record instantiation (all fields are mutable)
-#   • A list declaration, with or without a type annotation
+#   • A list declaration/initialization, with or without a type annotation
 STDECL ::=
   | var ID = EXPR
   | var ID : TYPE = EXPR
   | ID = new ID { FIELDS-DECL }
-  | ID : TYPE = new ID { FIELDS-DECL }
   | ID [ ]
   | ID [ ] : TYPE
-  | list ID = EXPR
+  | ID = EXPR
   | ID : TYPE = EXPR
   
 # A declaration of fields for record instantiation.
@@ -89,10 +88,11 @@ FIELDS-DECL ::=
   | ID = EXPR
   | ID = EXPR ; FIELDS-DECL
 
-# A constructor is either a single constructor or more than one of them.
+# A constructor is either a single constructor or more than one of them. Here, "|"
+# escapes the meta-syntax: We are using it to mean |.
 CONSTRUCTORS ::=
   | NAME
-  | NAME or CONSTRUCTORS
+  | NAME "|" CONSTRUCTORS
 
 # A constructor name is just a primitive constructor, with or without arguments
 NAME ::=
@@ -147,7 +147,7 @@ STATEMENT ::=
 #   • The length of a list (could be a sublist)
 #   • A pair of expressions (i.e. a pairing operator)
 #   • The projection functions that find the left-half and the right-half of a
-#       pair, respectively
+#       pair, respectively (called the head and tail of the pair)
 #   • An anonymous function from an identifier to expressions (i.e. no curried
 #       functions)
 #   • Function application, but can only apply arguments to a named function
@@ -156,9 +156,10 @@ STATEMENT ::=
 #   • A unary relation on expressions (unary operations)
 #   • An if-then-else expression (effectively a ternary operator)
 #   • A user-defined type constructor, with or without an expression as an argument
+#   • An invocation of the Left or Right parts of an Either type (i.e. wrapping)
 #   • A pattern-matching device for constructors, pairs, and primitive datatypes
 EXPR ::=
-  | ()
+  | ( )
   | BYTE
   | INT
   | LONG
@@ -177,13 +178,14 @@ EXPR ::=
   | LPAREN EXPR_1 >|< EXPR_2 RPAREN
   | length LPAREN ID RPAREN
   | ( EXPR_1 , EXPR_2 )
-  | left EXPR | right EXPR
+  | head LPAREN EXPR RPAREN | tail LPAREB EXPR RPAREN
   | lambda ID -> EXPR
   | take ID LPAREN EXPRARGS RPAREN
   | EXPR_1 BINOP EXPR_2
   | UNOP EXPR
   | LPAREN if EXPR_1 then EXPR_2 else EXPR_3 RPAREN
   | CONSTRUCTOR | CONSTRUCTOR LPAREN EXPR RPAREN
+  | Left LPAREN EXPR RPAREN | Right LPAREN EXPR RPAREN
   | match EXPR with
       CASES
     end
@@ -220,8 +222,9 @@ EXPRARG ::=
 #   Note that we do not permit pattern matching over strings. Its use is only apparent
 #   for user-defined data types and pairs.
 PATTERN ::=
-  | _ | [ ] | PATTERN_1 :: PATTERN_2 | () | BYTE | INT | LONG | FLOAT | BOOL | CHAR | ID | None
-  | CONSTRUCTOR LPAREN PATTERN RPAREN | ( PATTERN_1, PATTERN_2 ) | Just LPAREN PATTERN RPAREN
+  | _ | [ ] | PAT_1 :: PAT_2 | () | BYTE | INT | LONG | FLOAT | BOOL | CHAR | ID | None
+  | CONSTRUCTOR LPAREN PATTERN RPAREN | ( PAT_1, PAT_2 ) | Just LPAREN PATTERN RPAREN
+  | Left LPAREN PATTERN RPAREN | Right LPAREN PATTERN RPAREN
 
 # A binary operation is one of the following:
 #   • Addition, subtraction, multiplication, division, or modular arithmetic
@@ -261,7 +264,8 @@ ARG ::=
 #   • A list, whose elements are homogeneously of one type
 #   • A user-defined type/record/alias, specified by an identifier
 #   • A function type (for lambda expressions captured by a variable)
-#   • An option type (for safe null-ing checks)
+#   • An option/maybe type (for safe null-ing checks)
+#   • An either type, which can be one or the other between two types (nest-able)
 #   • A polymorphic type (only up to 26, due to Greek limitations)
 TYPE ::=
   | Unit
@@ -275,6 +279,7 @@ TYPE ::=
   | ID
   | LPAREN TYPE_1 -> TYPE_2 RPAREN
   | Maybe TYPE | TYPE ?
+  | Either < TYPE_1 , TYPE_2 >
   | 'CHAR
 
 # Numerical types are kinds that represent actual numbers.
